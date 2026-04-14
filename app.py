@@ -11,7 +11,7 @@ import matplotlib.pyplot as plt
 st.set_page_config(
     page_title="Influencer Detection",
     layout="wide",
-    initial_sidebar_state="expanded"
+    initial_sidebar_state="collapsed"
 )
 
 # ── Load Artifacts ─────────────────────────────────────────────
@@ -39,45 +39,11 @@ df = load_data()
 cat_map = {k: v for k, v in cat_map.items()
            if 'adult' not in k.lower()}
 
-# ── Sidebar ────────────────────────────────────────────────────
-st.sidebar.title("Filters")
 
-tiers = st.sidebar.multiselect(
-    "Influencer Tier",
-    options=['Mega', 'Macro', 'Micro', 'Non-Influencer'],
-    default=['Mega', 'Macro', 'Micro']
-)
-
-min_score = st.sidebar.slider(
-    "Minimum Influencer Score", 0, 100, 20
-)
-
-countries = ['All'] + sorted(
-    df['audience_country'].dropna().unique().tolist()
-)
-country = st.sidebar.selectbox("Audience Country", countries)
-
-categories = ['All'] + sorted(
-    df['category'].dropna().unique().tolist()
-)
-category = st.sidebar.selectbox("Category", categories)
-
-top_n = st.sidebar.slider("Show Top N", 5, 200, 20)
-
-# ── Apply Filters ──────────────────────────────────────────────
-filtered = df[
-    df['tier'].isin(tiers) &
-    (df['influencer_score'] >= min_score)
-].copy()
-
-if country != 'All':
-    filtered = filtered[filtered['audience_country'] == country]
-if category != 'All':
-    filtered = filtered[filtered['category'] == category]
-
-filtered = filtered.sort_values(
+# ── No Filters — show all data sorted by score ─────────────────
+filtered = df.sort_values(
     'influencer_score', ascending=False
-).head(top_n)
+).copy()
 
 # ── Header ─────────────────────────────────────────────────────
 st.title("Instagram Influencer Detection")
