@@ -26,7 +26,6 @@ def load_artifacts():
 @st.cache_data
 def load_data():
     df = pd.read_csv('data/influencers_scored.csv')
-    # Remove adult content
     df = df[~df['category'].str.lower().str.contains(
         'adult', na=False
     )]
