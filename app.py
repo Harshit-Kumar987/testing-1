@@ -202,8 +202,9 @@ with tab3:
         inp_rank      = st.number_input(
             "World Rank", 1, 10000, value=250)
         inp_followers = st.number_input(
-            "Followers", 1000, 500_000_000,
-            value=1_000_000, step=100_000)
+        "Followers", 10_000, 500_000_000,
+        value=1_000_000, step=100_000    # ← min changed to 10,000
+    )
 
     with c2:
         inp_auth_eng = st.number_input(
@@ -220,27 +221,44 @@ with tab3:
         )
 
     if st.button("Get Influencer Score", type="primary"):
-        eng_rate    = (inp_auth_eng / (inp_followers + 1)) * 100
-        reach       = np.log1p(inp_followers)
-        rank_s      = 1.0 / inp_rank
-        consistency = min(inp_eng_avg / (inp_auth_eng + 1), 5.0)
-        cat_enc     = cat_map.get(inp_category, 0)
+        # Validate inputs
+        if inp_followers < 1000:
+            st.warning("Followers should be at least 1000 for meaningful prediction.")
+        else:
+            eng_rate    = (inp_auth_eng / (inp_followers + 1)) * 100
+            reach       = np.log1p(inp_followers)
+            rank_s      = 1.0 / inp_rank
+            consistency = min(inp_eng_avg / (inp_auth_eng + 1), 5.0)
+            cat_enc     = cat_map.get(inp_category, 0)
 
-        input_arr    = np.array([[eng_rate, reach, rank_s,
-                                   consistency, cat_enc]])
-        input_scaled = scaler.transform(input_arr)
+            input_arr    = np.array([[eng_rate, reach, rank_s,
+                                       consistency, cat_enc]])
+            input_scaled = scaler.transform(input_arr)
 
-        prob  = rf.predict_proba(input_scaled)[0][1]
-        score = round(prob * 100, 2)
+            prob  = rf.predict_proba(input_scaled)[0][1]
+            score = round(prob * 100, 2)
 
-        tier = ('Mega'           if score >= 80 else
-                'Macro'          if score >= 60 else
-                'Micro'          if score >= 40 else
-                'Non-Influencer')
+            # Updated binary tier
+            tier = 'Influencer' if score >= 50 else 'Non-Influencer'
 
-        st.divider()
-        r1, r2, r3 = st.columns(3)
-        r1.metric("Influencer Score", f"{score} / 100")
-        r2.metric("Tier",             tier)
-        r3.metric("Engagement Rate",  f"{eng_rate:.3f}%")
-        st.progress(int(score))
+            st.divider()
+            r1, r2, r3 = st.columns(3)
+            r1.metric("Influencer Score", f"{score} / 100")
+            r2.metric("Tier",             tier)
+            r3.metric("Engagement Rate",  f"{eng_rate:.3f}%")
+            st.progress(int(score))
+
+            # Formula explanation
+            st.divider()
+            st.markdown("**How the Influencer Score is calculated:**")
+            st.markdown(f"""
+                        | Feature | Value | Description |
+                        |---|---|---|
+                        | Engagement Rate | `{eng_rate:.3f}%` | Authentic Engagement / Followers × 100 |
+                        | Reach Score | `{reach:.3f}` | log(Followers + 1) |
+                        | Rank Score | `{rank_s:.5f}` | 1 / World Rank |
+                        | Engagement Consistency | `{consistency:.3f}` | Engagement Avg / Authentic Engagement |
+                        | Category | `{inp_category}` | Encoded category value |
+                        """)
+            st.caption("All features scaled 0–1 → fed into Random Forest → "
+                       "probability × 100 = Influencer Score")
