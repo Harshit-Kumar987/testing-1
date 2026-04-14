@@ -78,10 +78,8 @@ with tab1:
 
     def color_tier(val):
         colors = {
-            'Mega'          : 'background-color: #1565C0; color: white',
-            'Macro'         : 'background-color: #1976D2; color: white',
-            'Micro'         : 'background-color: #42A5F5; color: white',
-            'Non-Influencer': 'background-color: #EEEEEE; color: #616161'
+        'Influencer'    : 'background-color: #1565C0; color: white',
+        'Non-Influencer': 'background-color: #EEEEEE; color: #616161'
         }
         return colors.get(val, '')
 
@@ -120,34 +118,27 @@ with tab2:
         # Remove Nano from the chart data
         tier_counts = df[df['tier'] != 'Nano']['tier'].value_counts()
         
-        tier_colors = {
-            'Mega'          : '#0D47A1',
-            'Macro'         : '#1976D2',
-            'Micro'         : '#42A5F5',
-            'Non-Influencer': "#76797B"
-        }
-        colors = [tier_colors.get(t, '#90CAF9') for t in tier_counts.index]
+        tier_counts = df['tier'].value_counts()
 
         fig, ax = plt.subplots(figsize=(5, 4))
         wedges, texts, autotexts = ax.pie(
             tier_counts,
-            labels=None,           # remove labels from pie itself
+            labels=None,
             autopct='%1.1f%%',
-            colors=colors,
+            colors=['#1565C0', '#E3F2FD'],
             startangle=140,
-            pctdistance=0.75
+            pctdistance=0.65
         )
-        # Add clean legend instead of overlapping labels
         ax.legend(
             wedges,
             tier_counts.index,
             loc='lower center',
-            bbox_to_anchor=(0.5, -0.15),
+            bbox_to_anchor=(0.5, -0.12),
             ncol=2,
             fontsize=9
         )
         for autotext in autotexts:
-            autotext.set_fontsize(9)
+            autotext.set_fontsize(10)
             autotext.set_color('white')
 
         plt.tight_layout()
