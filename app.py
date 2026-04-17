@@ -252,13 +252,15 @@ with tab3:
             st.divider()
             st.markdown("**How the Influencer Score is calculated:**")
             st.markdown(f"""
-                        | Feature | Value | Description |
-                        |---|---|---|
-                        | Engagement Rate | `{eng_rate:.3f}%` | Authentic Engagement / Followers × 100 |
-                        | Reach Score | `{reach:.3f}` | log(Followers + 1) |
-                        | Rank Score | `{rank_s:.5f}` | 1 / World Rank |
-                        | Engagement Consistency | `{consistency:.3f}` | Engagement Avg / Authentic Engagement |
-                        | Category | `{inp_category}` | Encoded category value |
-                        """)
-            st.caption("All features scaled 0–1 → fed into Random Forest → "
-                       "probability × 100 = Influencer Score")
+| Feature | Your Value |
+|---|---|
+| Followers | `{inp_followers:,}` |
+| Authentic Engagement | `{inp_auth_eng:,}` |
+| Engagement Avg. | `{inp_eng_avg:,}` |
+| Engagement Rate | `{eng_rate:.3f}%` |
+| World Rank | `#{inp_rank}` |
+| Category | `{inp_category}` |
+""")
+            st.caption("These features are fed into a Random Forest model "
+                       "trained on 1000 top Instagram accounts → "
+                       "output probability × 100 = Influencer Score")
