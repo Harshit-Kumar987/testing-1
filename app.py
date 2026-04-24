@@ -7,7 +7,7 @@ st.set_page_config(
     page_title="Influencer Detection",
     page_icon="📸",
     layout="centered",
-    initial_sidebar_ebar="collapsed"
+    initial_sidebar_state="collapsed"
 )
 
 # ── Minimal CSS override ───────────────────────────────────────
