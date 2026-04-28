@@ -5,7 +5,7 @@ import joblib
 
 st.set_page_config(
     page_title="Influencer Detection",
-    page_icon="📸",
+    page_icon="",
     layout="centered",
     initial_sidebar_state="collapsed"
 )
@@ -30,7 +30,7 @@ STATUS = {
 }
 
 # ── Header ─────────────────────────────────────────────────────
-st.title("📸 Influencer Detection")
+st.title(" Influencer Detection")
 st.caption("B.Tech 4th Semester · ML Project")
 st.divider()
 
