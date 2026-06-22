@@ -31,7 +31,7 @@ STATUS = {
 
 # ── Header ─────────────────────────────────────────────────────
 st.title(" Influencer Detection")
-st.caption("B.Tech 4th Semester · ML Project")
+st.caption("")
 st.divider()
 
 # ── Inputs ─────────────────────────────────────────────────────
